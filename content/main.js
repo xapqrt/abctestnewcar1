@@ -1,0 +1,91 @@
+console.log('VibeCheck content script loaded on:', window.location.hostname);
+
+
+const config = { childList: true, subtree: true };
+let mut_obs = null;
+let scan_delay = 300;
+let debounce_timeout = null;
+
+
+const SELECTORS = {
+    twitter: '[data-testid="tweet"]',
+    reddit: 'shreddit-post, div[data-testid="post-container"]',
+    linkedin: 'div.feed-shared-update-v2'
+};
+
+
+function getPlatform() {
+    const host = window.location.hostname;
+    if (host.includes('twitter.com') || host.includes('x.com')) return 'twitter';
+    if (host.includes('reddit.com')) return 'reddit';
+    if (host.includes('linkedin.com')) return 'linkedin';
+    return null;
+}
+
+const current_platform = getPlatform();
+console.log('platform:', current_platform);
+
+
+function initWhenReady() {
+    const interval = setInterval(() => {
+        const selector = SELECTORS[current_platform];
+        if (document.querySelector(selector)) {
+            clearInterval(interval);
+            console.log('posts found, starting scanner');
+            initScanner();
+        }
+    }, 500);
+}
+
+
+function initScanner() {
+    scanFeed();
+    
+    mut_obs = new MutationObserver((mutations) => {
+        clearTimeout(debounce_timeout);
+        debounce_timeout = setTimeout(() => {
+            console.log('mutations detected, scanning...');
+            scanFeed();
+        }, scan_delay);
+    });
+    
+    mut_obs.observe(document.body, config);
+    console.log('observer active');
+}
+
+
+function scanFeed() {
+    const start = performance.now();
+    const selector = SELECTORS[current_platform];
+    const posts = document.querySelectorAll(selector);
+    
+    console.log(`found ${posts.length} posts`);
+    
+    let checked_count = 0;
+    posts.forEach(post => {
+        if (post.getAttribute('vibe-checked')) return;
+        
+        const txt = post.innerText || '';
+        
+        if (txt.length < 10) {
+            post.setAttribute('vibe-checked', 'true');
+            return;
+        }
+        
+        console.log('checking:', txt.slice(0, 30) + '...');
+        
+        // TODO: run sentiment check
+        post.setAttribute('vibe-checked', 'true');
+        checked_count++;
+    });
+    
+    const elapsed = performance.now() - start;
+    console.log(`scanned ${checked_count} posts in ${elapsed.toFixed(1)}ms`);
+}
+
+
+if (current_platform) {
+    initWhenReady();
+} else {
+    console.log('unsupported platform');
+}
