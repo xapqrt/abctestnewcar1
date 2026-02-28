@@ -1,0 +1,56 @@
+const bad_words = {
+    'hate': -1.5,
+    'angry': -1.2,
+    'furious': -1.3,
+    'rage': -1.4,
+    'mad': -0.8,
+    'pissed': -1.1,
+    'annoyed': -0.7,
+    'toxic': -1.6,
+    'trash': -1.2,
+    'garbage': -1.1,
+    'stupid': -1.3,
+    'idiot': -1.4,
+    'dumb': -1.2,
+    'pathetic': -1.3,
+    'loser': -1.5,
+    'fail': -0.9,
+    'sad': -0.8,
+    'depressed': -1.1,
+    'hopeless': -1.2,
+    'miserable': -1.0,
+    'cry': -0.7,
+    'crying': -0.8,
+    'kill': -1.7,
+    'destroy': -1.3,
+    'attack': -1.4,
+    'fight': -1.0,
+    'terrible': -1.1,
+    'horrible': -1.2,
+    'awful': -1.1,
+    'worst': -1.0,
+    'suck': -1.1,
+    'sucks': -1.1
+};
+
+
+const good_words = {
+    'love': 1.2,
+    'amazing': 1.3,
+    'great': 0.9,
+    'awesome': 1.1,
+    'happy': 1.0,
+    'joy': 1.1,
+    'wonderful': 1.2,
+    'perfect': 1.0,
+    'excellent': 1.1,
+    'beautiful': 1.0,
+    'fantastic': 1.2,
+    'best': 0.9,
+    'good': 0.7,
+    'nice': 0.6,
+    'cool': 0.5
+};
+
+
+console.log('📖 dictionary loaded');
