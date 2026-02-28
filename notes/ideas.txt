@@ -1,0 +1,45 @@
+vibecheck dev notes
+-------------------
+
+TODO:
+- get basic mutation observer working on twitter ✓
+- sentiment dictionary ✓
+- blur overlay injection ✓
+- popup settings page ✓
+- reddit support
+- linkedin support
+- fix reddit selector issue
+
+
+twitter notes:
+- data-testid="tweet" seems stable for now
+- twitter updates their DOM like every week tho
+- might break at any moment
+
+
+nlp thoughts:
+- word counting is working good enough
+- threshold tuning is annoying but -2.0 seems okay
+
+
+performance:
+- debounce at 300ms is fine
+- might lag on super long feeds but whatever
+
+
+styling:
+- backdrop-filter looks sick at 22px
+- spotify green (#1DB954) everywhere
+- dark mode only
+
+
+bugs:
+- reddit posts not showing up sometimes
+- enable/disable toggle doesnt refresh page
+- all caps multiplier flagging positive posts
+
+
+next:
+- test on reddit properly
+- add linkedin selectors
+- maybe whitelist feature later
