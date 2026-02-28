@@ -74,13 +74,45 @@ function scanFeed() {
         
         console.log('checking:', txt.slice(0, 30) + '...');
         
-        // TODO: run sentiment check
+        const vibe_score = analyzeVibe(txt);
+        console.log('vibe score:', vibe_score.toFixed(2));
+        
+        if (vibe_score < -2.0) {
+            injectBlur(post, vibe_score);
+        }
+        
         post.setAttribute('vibe-checked', 'true');
         checked_count++;
     });
     
     const elapsed = performance.now() - start;
     console.log(`scanned ${checked_count} posts in ${elapsed.toFixed(1)}ms`);
+}
+
+
+function injectBlur(post, score) {
+    if (post.style.position !== 'absolute' && post.style.position !== 'relative') {
+        post.style.position = 'relative';
+    }
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'vibe-overlay';
+    
+    const warning = document.createElement('div');
+    warning.className = 'vibe-warning';
+    warning.textContent = `Potentially Negative Content (score: ${score.toFixed(1)})`;
+    
+    const btn = document.createElement('button');
+    btn.className = 'vibe-reveal-btn';
+    btn.textContent = 'Reveal Anyway';
+    btn.onclick = () => {
+        overlay.remove();
+        console.log('revealed post');
+    };
+    
+    overlay.appendChild(warning);
+    overlay.appendChild(btn);
+    post.appendChild(overlay);
 }
 
 
