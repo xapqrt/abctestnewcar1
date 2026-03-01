@@ -10,11 +10,12 @@ let debounce_timeout = null;
 const SELECTORS = {
     twitter: '[data-testid="tweet"]',
     reddit: 'shreddit-post',
-    linkedin: 'div.feed-shared-update-v2'
+    linkedin: 'div.feed-shared-update-v2__content'
 };
 
 
 const REDDIT_BACKUP = 'div[id^="t3_"]';
+const LINKEDIN_BACKUP = 'div[data-id^="urn:li:activity"]';
 
 
 function getPlatform() {
@@ -36,6 +37,12 @@ function initWhenReady() {
         if (current_platform === 'reddit') {
             if (!document.querySelector(selector)) {
                 selector = REDDIT_BACKUP;
+            }
+        }
+        
+        if (current_platform === 'linkedin') {
+            if (!document.querySelector(selector)) {
+                selector = LINKEDIN_BACKUP;
             }
         }
         
@@ -73,6 +80,14 @@ function scanFeed() {
         if (posts.length === 0) {
             selector = REDDIT_BACKUP;
             console.log('using backup reddit selector');
+        }
+    }
+    
+    if (current_platform === 'linkedin') {
+        let posts = document.querySelectorAll(selector);
+        if (posts.length === 0) {
+            selector = LINKEDIN_BACKUP;
+            console.log('using backup linkedin selector');
         }
     }
     
