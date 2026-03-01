@@ -8,21 +8,26 @@ console.log('VibeCheck background service worker loaded');
 // listen for storage changes
 chrome.storage.onChanged.addListener((changes, area) => {
     console.log('storage changed:', changes);
-    // maybe notify content scripts later if needed
 });
 
 
 // keep alive hack (manifest v3 is mental)
-// this is just for debugging rn
 chrome.runtime.onInstalled.addListener(() => {
     console.log('VibeCheck extension installed!!');
     
-    // set default settings
     chrome.storage.sync.set({
         enabled: true,
-        threshold: 0.62,  // tuned by eye
+        threshold: -2.0,
         block_anger: true,
         block_sadness: false,
         block_toxic: true
     });
+});
+
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'getStats') {
+        sendResponse({ status: 'active' });
+    }
+    return true;
 });
