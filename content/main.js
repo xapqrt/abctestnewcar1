@@ -5,6 +5,8 @@ const config = { childList: true, subtree: true };
 let mut_obs = null;
 let scan_delay = 300;
 let debounce_timeout = null;
+let scan_count = 0;
+let last_scan = 0;
 
 let settings = {
     enabled: true,
@@ -102,6 +104,13 @@ function initScanner() {
 
 
 function scanFeed() {
+    const now = Date.now();
+    if (now - last_scan < 100) {
+        console.log('skipping scan, too soon');
+        return;
+    }
+    last_scan = now;
+    
     const start = performance.now();
     let selector = SELECTORS[current_platform];
     
@@ -152,33 +161,38 @@ function scanFeed() {
     });
     
     const elapsed = performance.now() - start;
-    console.log(`scanned ${checked_count} posts in ${elapsed.toFixed(1)}ms`);
+    scan_count++;
+    console.log(`scanned ${checked_count} posts in ${elapsed.toFixed(1)}ms (total scans: ${scan_count})`);
 }
 
 
 function injectBlur(post, score) {
-    if (post.style.position !== 'absolute' && post.style.position !== 'relative') {
-        post.style.position = 'relative';
+    try {
+        if (post.style.position !== 'absolute' && post.style.position !== 'relative') {
+            post.style.position = 'relative';
+        }
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'vibe-overlay';
+        
+        const warning = document.createElement('div');
+        warning.className = 'vibe-warning';
+        warning.textContent = `Potentially Negative Content (score: ${score.toFixed(1)})`;
+        
+        const btn = document.createElement('button');
+        btn.className = 'vibe-reveal-btn';
+        btn.textContent = 'Reveal Anyway';
+        btn.onclick = () => {
+            overlay.remove();
+            console.log('revealed post');
+        };
+        
+        overlay.appendChild(warning);
+        overlay.appendChild(btn);
+        post.appendChild(overlay);
+    } catch (e) {
+        console.log('error injecting blur:', e);
     }
-    
-    const overlay = document.createElement('div');
-    overlay.className = 'vibe-overlay';
-    
-    const warning = document.createElement('div');
-    warning.className = 'vibe-warning';
-    warning.textContent = `Potentially Negative Content (score: ${score.toFixed(1)})`;
-    
-    const btn = document.createElement('button');
-    btn.className = 'vibe-reveal-btn';
-    btn.textContent = 'Reveal Anyway';
-    btn.onclick = () => {
-        overlay.remove();
-        console.log('revealed post');
-    };
-    
-    overlay.appendChild(warning);
-    overlay.appendChild(btn);
-    post.appendChild(overlay);
 }
 
 

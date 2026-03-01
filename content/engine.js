@@ -22,8 +22,8 @@ function analyzeVibe(text) {
         }
     });
     
-    // all caps multiplier
-    if (text === text.toUpperCase() && text.length > 10) {
+    // all caps multiplier but only if theres bad words
+    if (text === text.toUpperCase() && text.length > 10 && bad_count > 0) {
         score *= 1.5;
     }
     
