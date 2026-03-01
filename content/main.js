@@ -147,6 +147,12 @@ function scanFeed() {
             return;
         }
         
+        if (txt.length > 5000) {
+            console.log('post too long, skipping');
+            post.setAttribute('vibe-checked', 'true');
+            return;
+        }
+        
         console.log('checking:', txt.slice(0, 30) + '...');
         
         const vibe_score = analyzeVibe(txt);
