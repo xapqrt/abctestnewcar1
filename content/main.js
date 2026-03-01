@@ -174,7 +174,8 @@ function scanFeed() {
 
 function injectBlur(post, score) {
     try {
-        if (post.style.position !== 'absolute' && post.style.position !== 'relative') {
+        const computed = window.getComputedStyle(post).position;
+        if (computed !== 'absolute' && computed !== 'relative' && computed !== 'fixed') {
             post.style.position = 'relative';
         }
         
