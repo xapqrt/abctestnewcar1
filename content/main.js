@@ -165,11 +165,17 @@ function scanFeed() {
         
         console.log('checking:', txt.slice(0, 30) + '...');
         
-        const vibe_score = analyzeVibe(txt);
-        console.log('vibe score:', vibe_score.toFixed(2));
+        const active_cats = {
+            anger: settings.block_anger,
+            sadness: settings.block_sadness,
+            toxic: settings.block_toxic
+        };
         
-        if (vibe_score < settings.threshold) {
-            injectBlur(post, vibe_score);
+        const { score: vibe_score, emotion } = analyzeVibe(txt, active_cats);
+        console.log('vibe score:', vibe_score.toFixed(2), '| emotion:', emotion);
+        
+        if (vibe_score < settings.threshold && emotion !== null) {
+            injectBlur(post, vibe_score, emotion);
         }
         
         post.setAttribute('vibe-checked', 'true');
@@ -182,7 +188,7 @@ function scanFeed() {
 }
 
 
-function injectBlur(post, score) {
+function injectBlur(post, score, emotion) {
     try {
         const computed = window.getComputedStyle(post).position;
         if (computed !== 'absolute' && computed !== 'relative' && computed !== 'fixed') {
@@ -194,7 +200,8 @@ function injectBlur(post, score) {
         
         const warning = document.createElement('div');
         warning.className = 'vibe-warning';
-        warning.textContent = `Potentially Negative Content (score: ${score.toFixed(1)})`;
+        const label = emotion ? emotion.charAt(0).toUpperCase() + emotion.slice(1) : 'Negative';
+        warning.textContent = `Potentially Negative Content: ${label}`;
         
         const btn = document.createElement('button');
         btn.className = 'vibe-reveal-btn';

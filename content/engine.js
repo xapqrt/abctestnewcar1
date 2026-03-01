@@ -1,5 +1,5 @@
-function analyzeVibe(text) {
-    if (!text || text.length < 5) return 0;
+function analyzeVibe(text, active_cats) {
+    if (!text || text.length < 5) return { score: 0, emotion: null };
     
     const txt = text.toLowerCase();
     const words = txt.split(/\s+/);
@@ -7,13 +7,18 @@ function analyzeVibe(text) {
     let score = 0;
     let bad_count = 0;
     let good_count = 0;
+    let detected = null;
     
     words.forEach(word => {
         const clean_word = word.replace(/[.,!?;:'"]/g, '');
         
         if (bad_words[clean_word]) {
-            score += bad_words[clean_word];
-            bad_count++;
+            const entry = bad_words[clean_word];
+            if (!active_cats || active_cats[entry.cat]) {
+                score += entry.score;
+                bad_count++;
+                if (!detected) detected = entry.cat;
+            }
         }
         
         if (good_words[clean_word]) {
@@ -27,12 +32,12 @@ function analyzeVibe(text) {
         score *= 1.5;
     }
     
-    return score;
+    return { score, emotion: detected };
 }
 
 
-function isToxic(text, threshold = -2.0) {
-    const score = analyzeVibe(text);
+function isToxic(text, threshold, active_cats) {
+    const { score } = analyzeVibe(text, active_cats);
     return score < threshold;
 }
 
