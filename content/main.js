@@ -7,6 +7,7 @@ let scan_delay = 300;
 let debounce_timeout = null;
 let scan_count = 0;
 let last_scan = 0;
+let last_url = window.location.href;
 
 let settings = {
     enabled: true,
@@ -225,3 +226,23 @@ if (current_platform) {
 } else {
     console.log('unsupported platform');
 }
+
+
+// spa navigation detection
+// twitter/reddit/linkedin dont reload on navigate so we gotta watch for url changes
+setInterval(() => {
+    if (window.location.href !== last_url) {
+        last_url = window.location.href;
+        console.log('url changed, reinitializing scanner...');
+        
+        if (mut_obs) {
+            mut_obs.disconnect();
+            mut_obs = null;
+        }
+        
+        last_scan = 0;
+        scan_count = 0;
+        
+        initWhenReady();
+    }
+}, 1000);
