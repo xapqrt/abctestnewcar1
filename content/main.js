@@ -9,9 +9,12 @@ let debounce_timeout = null;
 
 const SELECTORS = {
     twitter: '[data-testid="tweet"]',
-    reddit: 'shreddit-post, div[data-testid="post-container"]',
+    reddit: 'shreddit-post',
     linkedin: 'div.feed-shared-update-v2'
 };
+
+
+const REDDIT_BACKUP = 'div[id^="t3_"]';
 
 
 function getPlatform() {
@@ -28,7 +31,14 @@ console.log('platform:', current_platform);
 
 function initWhenReady() {
     const interval = setInterval(() => {
-        const selector = SELECTORS[current_platform];
+        let selector = SELECTORS[current_platform];
+        
+        if (current_platform === 'reddit') {
+            if (!document.querySelector(selector)) {
+                selector = REDDIT_BACKUP;
+            }
+        }
+        
         if (document.querySelector(selector)) {
             clearInterval(interval);
             console.log('posts found, starting scanner');
@@ -56,7 +66,16 @@ function initScanner() {
 
 function scanFeed() {
     const start = performance.now();
-    const selector = SELECTORS[current_platform];
+    let selector = SELECTORS[current_platform];
+    
+    if (current_platform === 'reddit') {
+        let posts = document.querySelectorAll(selector);
+        if (posts.length === 0) {
+            selector = REDDIT_BACKUP;
+            console.log('using backup reddit selector');
+        }
+    }
+    
     const posts = document.querySelectorAll(selector);
     
     console.log(`found ${posts.length} posts`);
