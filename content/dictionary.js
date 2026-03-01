@@ -30,7 +30,18 @@ const bad_words = {
     'awful': -1.1,
     'worst': -1.0,
     'suck': -1.1,
-    'sucks': -1.1
+    'sucks': -1.1,
+    'disgusting': -1.3,
+    'shit': -1.2,
+    'damn': -0.9,
+    'hell': -0.8,
+    'screw': -1.0,
+    'screwed': -1.0,
+    'wtf': -1.1,
+    'ugh': -0.7,
+    'nightmare': -1.2,
+    'disaster': -1.3,
+    'mess': -0.9
 };
 
 
@@ -49,7 +60,17 @@ const good_words = {
     'best': 0.9,
     'good': 0.7,
     'nice': 0.6,
-    'cool': 0.5
+    'cool': 0.5,
+    'thank': 0.8,
+    'thanks': 0.8,
+    'appreciate': 0.9,
+    'grateful': 1.0,
+    'blessed': 1.0,
+    'incredible': 1.2,
+    'congrats': 1.0,
+    'win': 0.8,
+    'yay': 0.9,
+    'excited': 1.0
 };
 
 
