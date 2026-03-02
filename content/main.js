@@ -35,16 +35,18 @@ let settings = {
     threshold: -2.0,
     block_anger: true,
     block_sadness: false,
-    block_toxic: true
+    block_toxic: true,
+    whitelist: []
 };
 
 
-chrome.storage.sync.get(['enabled', 'threshold', 'block_anger', 'block_sadness', 'block_toxic'], (result) => {
+chrome.storage.sync.get(['enabled', 'threshold', 'block_anger', 'block_sadness', 'block_toxic', 'whitelist'], (result) => {
     if (result.enabled !== undefined) settings.enabled = result.enabled;
     if (result.threshold !== undefined) settings.threshold = result.threshold;
     if (result.block_anger !== undefined) settings.block_anger = result.block_anger;
     if (result.block_sadness !== undefined) settings.block_sadness = result.block_sadness;
     if (result.block_toxic !== undefined) settings.block_toxic = result.block_toxic;
+    if (result.whitelist !== undefined) settings.whitelist = result.whitelist;
     console.log('loaded settings:', settings);
 });
 
@@ -56,6 +58,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
         if (changes.block_anger !== undefined) settings.block_anger = changes.block_anger.newValue;
         if (changes.block_sadness !== undefined) settings.block_sadness = changes.block_sadness.newValue;
         if (changes.block_toxic !== undefined) settings.block_toxic = changes.block_toxic.newValue;
+        if (changes.whitelist !== undefined) settings.whitelist = changes.whitelist.newValue;
         console.log('settings updated:', settings);
     }
 });
@@ -181,6 +184,13 @@ function scanFeed() {
         
         if (txt.length > 5000) {
             console.log('post too long, skipping');
+            post.setAttribute('vibe-checked', 'true');
+            return;
+        }
+        
+        const txt_lower = txt.toLowerCase();
+        const is_whitelisted = settings.whitelist.some(term => txt_lower.includes(term));
+        if (is_whitelisted) {
             post.setAttribute('vibe-checked', 'true');
             return;
         }

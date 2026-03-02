@@ -16,12 +16,14 @@ function init() {
     });
 
     saveBtn.addEventListener('click', () => {
+        const raw_whitelist = document.getElementById('whitelist').value;
         const settings = {
             enabled: document.getElementById('enabled').checked,
             threshold: parseFloat(document.getElementById('threshold').value),
             block_anger: document.getElementById('block_anger').checked,
             block_sadness: document.getElementById('block_sadness').checked,
-            block_toxic: document.getElementById('block_toxic').checked
+            block_toxic: document.getElementById('block_toxic').checked,
+            whitelist: raw_whitelist.split('\n').map(s => s.trim().toLowerCase()).filter(s => s.length > 0)
         };
 
         chrome.storage.sync.set(settings, () => {
@@ -60,7 +62,8 @@ function loadSettings() {
         'threshold',
         'block_anger',
         'block_sadness',
-        'block_toxic'
+        'block_toxic',
+        'whitelist'
     ], (result) => {
         document.getElementById('enabled').checked = result.enabled ?? true;
         document.getElementById('threshold').value = result.threshold ?? -2.0;
@@ -68,5 +71,6 @@ function loadSettings() {
         document.getElementById('block_anger').checked = result.block_anger ?? true;
         document.getElementById('block_sadness').checked = result.block_sadness ?? false;
         document.getElementById('block_toxic').checked = result.block_toxic ?? true;
+        document.getElementById('whitelist').value = (result.whitelist || []).join('\n');
     });
 }
