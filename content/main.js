@@ -27,6 +27,11 @@ function saveStats() {
             toxic: existing.toxic + session_stats.toxic
         };
         chrome.storage.local.set({ stats: merged });
+        // reset so we dont double count next save
+        session_stats.total = 0;
+        session_stats.anger = 0;
+        session_stats.sadness = 0;
+        session_stats.toxic = 0;
     });
 }
 
