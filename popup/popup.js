@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
+    loadStats();
     init();
 });
 
@@ -31,6 +32,24 @@ function init() {
                 statusDiv.textContent = '';
             }, 2000);
         });
+    });
+
+    document.getElementById('clear-stats').addEventListener('click', () => {
+        chrome.storage.local.set({ stats: { total: 0, anger: 0, sadness: 0, toxic: 0 } }, () => {
+            loadStats();
+            console.log('stats cleared');
+        });
+    });
+}
+
+
+function loadStats() {
+    chrome.storage.local.get(['stats'], (result) => {
+        const s = result.stats || { total: 0, anger: 0, sadness: 0, toxic: 0 };
+        document.getElementById('stat-total').textContent = s.total;
+        document.getElementById('stat-anger').textContent = s.anger;
+        document.getElementById('stat-sadness').textContent = s.sadness;
+        document.getElementById('stat-toxic').textContent = s.toxic;
     });
 }
 
