@@ -235,7 +235,7 @@ function scanFeed() {
 function injectBlur(post, score, emotion) {
     try {
         const computed = window.getComputedStyle(post).position;
-        if (computed !== 'absolute' && computed !== 'relative' && computed !== 'fixed') {
+        if (computed !== 'absolute' && computed !== 'relative' && computed !== 'fixed' && computed !== 'sticky') {
             post.style.position = 'relative';
         }
         

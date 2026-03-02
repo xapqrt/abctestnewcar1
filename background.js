@@ -21,6 +21,7 @@ chrome.runtime.onInstalled.addListener(() => {
         block_anger: true,
         block_sadness: false,
         block_toxic: true,
+        whitelist: [],
         platform_thresholds: { twitter: -2.0, reddit: -2.5, linkedin: -1.5 }
     });
 });
