@@ -235,8 +235,10 @@ function injectBlur(post, score, emotion) {
         
         const warning = document.createElement('div');
         warning.className = 'vibe-warning';
+        const emotion_icons = { anger: '🔥', sadness: '😢', toxic: '☣️' };
+        const icon = emotion_icons[emotion] || '⚠️';
         const label = emotion ? emotion.charAt(0).toUpperCase() + emotion.slice(1) : 'Negative';
-        warning.textContent = `Potentially Negative Content: ${label}`;
+        warning.textContent = `${icon} ${label} Content Detected`;
         
         const btn = document.createElement('button');
         btn.className = 'vibe-reveal-btn';
