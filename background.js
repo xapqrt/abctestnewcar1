@@ -20,7 +20,8 @@ chrome.runtime.onInstalled.addListener(() => {
         threshold: -2.0,
         block_anger: true,
         block_sadness: false,
-        block_toxic: true
+        block_toxic: true,
+        platform_thresholds: { twitter: -2.0, reddit: -2.5, linkedin: -1.5 }
     });
 });
 

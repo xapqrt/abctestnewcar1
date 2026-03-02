@@ -15,6 +15,12 @@ function init() {
         thresholdVal.textContent = e.target.value;
     });
 
+    ['twitter', 'reddit', 'linkedin'].forEach(p => {
+        document.getElementById(`pt_${p}`).addEventListener('input', (e) => {
+            document.getElementById(`pt_${p}_val`).textContent = e.target.value;
+        });
+    });
+
     saveBtn.addEventListener('click', () => {
         const raw_whitelist = document.getElementById('whitelist').value;
         const settings = {
@@ -23,7 +29,12 @@ function init() {
             block_anger: document.getElementById('block_anger').checked,
             block_sadness: document.getElementById('block_sadness').checked,
             block_toxic: document.getElementById('block_toxic').checked,
-            whitelist: raw_whitelist.split('\n').map(s => s.trim().toLowerCase()).filter(s => s.length > 0)
+            whitelist: raw_whitelist.split('\n').map(s => s.trim().toLowerCase()).filter(s => s.length > 0),
+            platform_thresholds: {
+                twitter: parseFloat(document.getElementById('pt_twitter').value),
+                reddit: parseFloat(document.getElementById('pt_reddit').value),
+                linkedin: parseFloat(document.getElementById('pt_linkedin').value)
+            }
         };
 
         chrome.storage.sync.set(settings, () => {
@@ -63,7 +74,8 @@ function loadSettings() {
         'block_anger',
         'block_sadness',
         'block_toxic',
-        'whitelist'
+        'whitelist',
+        'platform_thresholds'
     ], (result) => {
         document.getElementById('enabled').checked = result.enabled ?? true;
         document.getElementById('threshold').value = result.threshold ?? -2.0;
@@ -72,5 +84,12 @@ function loadSettings() {
         document.getElementById('block_sadness').checked = result.block_sadness ?? false;
         document.getElementById('block_toxic').checked = result.block_toxic ?? true;
         document.getElementById('whitelist').value = (result.whitelist || []).join('\n');
+        const pt = result.platform_thresholds || { twitter: -2.0, reddit: -2.5, linkedin: -1.5 };
+        document.getElementById('pt_twitter').value = pt.twitter;
+        document.getElementById('pt_twitter_val').textContent = pt.twitter;
+        document.getElementById('pt_reddit').value = pt.reddit;
+        document.getElementById('pt_reddit_val').textContent = pt.reddit;
+        document.getElementById('pt_linkedin').value = pt.linkedin;
+        document.getElementById('pt_linkedin_val').textContent = pt.linkedin;
     });
 }

@@ -36,17 +36,19 @@ let settings = {
     block_anger: true,
     block_sadness: false,
     block_toxic: true,
-    whitelist: []
+    whitelist: [],
+    platform_thresholds: { twitter: -2.0, reddit: -2.5, linkedin: -1.5 }
 };
 
 
-chrome.storage.sync.get(['enabled', 'threshold', 'block_anger', 'block_sadness', 'block_toxic', 'whitelist'], (result) => {
+chrome.storage.sync.get(['enabled', 'threshold', 'block_anger', 'block_sadness', 'block_toxic', 'whitelist', 'platform_thresholds'], (result) => {
     if (result.enabled !== undefined) settings.enabled = result.enabled;
     if (result.threshold !== undefined) settings.threshold = result.threshold;
     if (result.block_anger !== undefined) settings.block_anger = result.block_anger;
     if (result.block_sadness !== undefined) settings.block_sadness = result.block_sadness;
     if (result.block_toxic !== undefined) settings.block_toxic = result.block_toxic;
     if (result.whitelist !== undefined) settings.whitelist = result.whitelist;
+    if (result.platform_thresholds !== undefined) settings.platform_thresholds = result.platform_thresholds;
     console.log('loaded settings:', settings);
 });
 
@@ -59,6 +61,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
         if (changes.block_sadness !== undefined) settings.block_sadness = changes.block_sadness.newValue;
         if (changes.block_toxic !== undefined) settings.block_toxic = changes.block_toxic.newValue;
         if (changes.whitelist !== undefined) settings.whitelist = changes.whitelist.newValue;
+        if (changes.platform_thresholds !== undefined) settings.platform_thresholds = changes.platform_thresholds.newValue;
         console.log('settings updated:', settings);
     }
 });
@@ -206,7 +209,8 @@ function scanFeed() {
         const { score: vibe_score, emotion } = analyzeVibe(txt, active_cats);
         console.log('vibe score:', vibe_score.toFixed(2), '| emotion:', emotion);
         
-        if (vibe_score < settings.threshold && emotion !== null) {
+        const effective_threshold = (settings.platform_thresholds && settings.platform_thresholds[current_platform]) ?? settings.threshold;
+        if (vibe_score < effective_threshold && emotion !== null) {
             injectBlur(post, vibe_score, emotion);
             session_stats.total++;
             if (session_stats[emotion] !== undefined) session_stats[emotion]++;

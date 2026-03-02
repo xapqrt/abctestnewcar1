@@ -48,9 +48,28 @@
             <label>Whitelist Keywords / Users</label>
             <textarea id="whitelist" placeholder="one per line e.g. @elonmusk or keyword"></textarea>
             <p class="hint">posts containing these wont get blurred</p>
-            <span class="hint">posts containing these will never be blurred</span>
         </div>
-        
+
+        <div class="setting platform-section">
+            <label>Per-Platform Sensitivity</label>
+            <div class="platform-row">
+                <span>Twitter/X</span>
+                <input type="range" id="pt_twitter" min="-5" max="0" step="0.1" value="-2.0">
+                <span id="pt_twitter_val">-2.0</span>
+            </div>
+            <div class="platform-row">
+                <span>Reddit</span>
+                <input type="range" id="pt_reddit" min="-5" max="0" step="0.1" value="-2.5">
+                <span id="pt_reddit_val">-2.5</span>
+            </div>
+            <div class="platform-row">
+                <span>LinkedIn</span>
+                <input type="range" id="pt_linkedin" min="-5" max="0" step="0.1" value="-1.5">
+                <span id="pt_linkedin_val">-1.5</span>
+            </div>
+            <p class="hint">overrides the global threshold per site</p>
+        </div>
+
         <button id="save">Save Settings</button>
         <div id="status"></div>
         
