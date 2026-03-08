@@ -197,7 +197,8 @@ function scanFeed() {
         
         if (post.getAttribute('vibe-checked')) return;
         
-        const txt = post.innerText || '';
+        // innerText for normal elements, textContent as fallback for shadow dom
+        const txt = post.innerText || post.textContent || '';
         
         if (txt.length < 10) {
             post.setAttribute('vibe-checked', 'true');
