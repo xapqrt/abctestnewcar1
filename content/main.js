@@ -68,8 +68,22 @@ chrome.storage.onChanged.addListener((changes, area) => {
         if (changes.whitelist !== undefined) settings.whitelist = changes.whitelist.newValue;
         if (changes.platform_thresholds !== undefined) settings.platform_thresholds = changes.platform_thresholds.newValue;
         console.log('settings updated:', settings);
+        // re-evaluate all posts with new settings
+        resetAndRescan();
     }
 });
+
+
+function resetAndRescan() {
+    document.querySelectorAll('[vibe-checked]').forEach(el => {
+        el.removeAttribute('vibe-checked');
+    });
+    document.querySelectorAll('.vibe-overlay').forEach(el => {
+        el.remove();
+    });
+    last_scan = 0;
+    if (current_platform) scanFeed();
+}
 
 
 const SELECTORS = {
